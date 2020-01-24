@@ -1,0 +1,31 @@
+version: "3.4"
+
+services:
+  server:
+    container_name: wosido-server
+    build: docker/server
+    ports:
+      - 8090:8090
+      - 5858:5858
+    volumes:
+      - ./:/var/www/wosido
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=300
+    tty: true
+    command: /docker-entrypoint.sh
+    depends_on:
+      - mongodb
+    networks:
+      - wosido-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: wosido-mongodb
+    ports:
+      - 27017:27017
+    networks:
+      - wosido-network
+
+networks:
+  wosido-network:
+    external: true
