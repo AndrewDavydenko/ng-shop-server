@@ -1,5 +1,14 @@
+import { AuthService } from './auth/auth.service';
 import { ConfigService } from '@nestjs/config';
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Res,
+  // UseGuards,
+  // Get,
+} from '@nestjs/common';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users/users.service';
@@ -11,7 +20,8 @@ import { LoginDto, UserDto } from './users/user.dto';
 export class AppController {
   public constructor(
     private readonly usersService: UsersService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService
   ) {}
 
   @Post('signin')
@@ -72,8 +82,10 @@ export class AppController {
       const numberTypeSalt = Number(this.configService.get('SALT') as number);
       const salt = await bcrypt.genSalt(numberTypeSalt);
       const hash: string = await bcrypt.hash(user.password, salt);
+      const accessToken = await this.authService.createJWT(user);
       const newUser = await this.usersService.createUser({
         ...user,
+        accessToken,
         password: hash,
       });
       delete newUser.password;

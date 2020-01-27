@@ -15,7 +15,9 @@ export class UsersService {
       .lean()
       .exec();
   }
-  public async createUser(user: UserDto): Promise<UserDto> {
+  public async createUser(
+    user: UserDto & { accessToken: string }
+  ): Promise<UserDto> {
     const createdUser = new this.userModel(user);
     return createdUser.save();
   }
