@@ -14,7 +14,6 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from './users/users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto, UserDto } from './users/user.dto';
-import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -96,10 +95,5 @@ export class AppController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
     }
-  }
-  @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
-  public getProfile() {
-    return 'goood request';
   }
 }

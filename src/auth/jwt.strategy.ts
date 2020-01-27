@@ -14,9 +14,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // tslint:disable-next-line:no-any
-  public async validate(_payload: { phone: string }) {
+  public async validate(payload: { phone: string }) {
     // TODO SHOULD CHECK IN DB
-    return null;
-    // { phone: payload.phone };
+    return { phone: payload.phone };
   }
 }
