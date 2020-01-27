@@ -21,7 +21,6 @@ export class TasksController {
     try {
       return res.status(HttpStatus.OK).json({ data: [], error: null });
     } catch (error) {
-      console.error('errrorr');
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
