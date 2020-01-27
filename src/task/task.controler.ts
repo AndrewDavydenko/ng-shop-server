@@ -4,20 +4,21 @@ import {
   Body,
   Controller,
   HttpStatus,
-  Post,
-  Res,
-  // UseGuards,
-  // Get,
+  //   Post,
+  //   Res,
+  //   UseGuards,
+  //   Get,
 } from '@nestjs/common';
 import { Response } from 'express';
-import * as bcrypt from 'bcrypt';
-import { UsersService } from './users/users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto, UserDto } from './users/user.dto';
-import { AuthGuard } from '@nestjs/passport';
+// import * as bcrypt from 'bcrypt';
 
-@ApiTags('auth')
-@Controller('auth')
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+// import { LoginDto, UserDto } from './users/user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from 'src/users/users.service';
+
+@ApiTags('tasks')
+@Controller('tasks')
 export class AppController {
   public constructor(
     private readonly usersService: UsersService,
@@ -25,39 +26,7 @@ export class AppController {
     private readonly authService: AuthService
   ) {}
 
-  @Post('signin')
-  @ApiOperation({ description: 'User sign in' })
-  @ApiResponse({ description: 'User success sign in', status: HttpStatus.OK })
-  @ApiResponse({
-    description: 'Wrong credentials',
-    status: HttpStatus.UNAUTHORIZED,
-  })
-  @ApiResponse({
-    description: 'Server error during sigin',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  public async signin(@Body() user: LoginDto, @Res() res: Response) {
-    try {
-      const { phone, password: lpassword } = user;
-      const {
-        password,
-        ...userFromDb
-      }: UserDto = await this.usersService.findUser(phone);
-      if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
-        return res.status(HttpStatus.UNAUTHORIZED).json({
-          data: null,
-          error: 'Invalid username and/or password',
-        });
-      }
-      return res.status(HttpStatus.OK).json({ data: userFromDb, error: null });
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-
-  @Post('signup')
+  @Get('task')
   @ApiOperation({ description: 'User sign up (create user)' })
   @ApiResponse({
     description: 'The record has been successfully created.',
@@ -68,7 +37,7 @@ export class AppController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   public async signUp(
-    @Body() user: UserDto,
+    @Body() task: T,
     @Res() res: Response
   ): Promise<Response> {
     try {

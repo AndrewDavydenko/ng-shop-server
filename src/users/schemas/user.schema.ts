@@ -1,6 +1,9 @@
 import * as mongoose from 'mongoose';
 
 export const userSchema: mongoose.Schema = new mongoose.Schema({
+  accessToken: {
+    type: String,
+  },
   address: {
     type: String,
   },
