@@ -1,14 +1,6 @@
 import { AuthService } from './auth/auth.service';
 import { ConfigService } from '@nestjs/config';
-import {
-  Body,
-  Controller,
-  HttpStatus,
-  Post,
-  Res,
-  // UseGuards,
-  // Get,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users/users.service';
