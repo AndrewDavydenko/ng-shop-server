@@ -12,9 +12,7 @@ export class UserDto {
   public readonly birthday!: Date;
   @ApiProperty()
   public readonly phone!: string;
-  @ApiProperty()
   public readonly accessToken!: string;
-  @ApiProperty()
   public code!: number;
 }
 
