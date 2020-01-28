@@ -9,9 +9,10 @@ export class UsersService {
     @InjectModel('User') private readonly userModel: Model<any>
   ) {}
 
-  public async findUser(phone: string): Promise<UserDto> {
+  // tslint:disable-next-line:no-any
+  public async findUser(query: any): Promise<any> {
     return this.userModel
-      .findOne({ phone })
+      .findOne(query)
       .lean()
       .exec();
   }

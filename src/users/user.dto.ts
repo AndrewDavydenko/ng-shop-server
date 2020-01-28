@@ -13,7 +13,9 @@ export class UserDto {
   @ApiProperty()
   public readonly phone!: string;
   @ApiProperty()
-  public readonly unigCode!: string;
+  public readonly accessToken!: string;
+  @ApiProperty()
+  public code!: number;
 }
 
 // tslint:disable-next-line:max-classes-per-file
