@@ -5,9 +5,12 @@ import {
   HttpStatus,
   Post,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcrypt';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -70,9 +73,11 @@ export class AuthController {
     description: 'Server error during signup',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
+  @UseInterceptors(FileInterceptor('avatar'))
   public async signUp(
     @Body() user: UserDto,
-    @Res() res: Response
+    @Res() res: Response,
+    @UploadedFile() avatar: Buffer
   ): Promise<Response> {
     try {
       const { phone } = user;
@@ -87,6 +92,7 @@ export class AuthController {
       const salt = await bcrypt.genSalt(numberTypeSalt);
       const hash: string = await bcrypt.hash(user.password, salt);
       const accessToken = await this.authService.createJWT(user);
+      const imgBasse64 = Buffer.from(avatar.buffer).toString('base64');
       const rn = require('random-number');
       const generator = rn.generator({
         integer: true,
@@ -97,7 +103,7 @@ export class AuthController {
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
-        code,
+        avatar: imgBasse64,
         password: hash,
       });
       await this.smsService.sendSms(phone, code);
@@ -140,5 +146,10 @@ export class AuthController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
     }
+  }
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('files'))
+  public uploadFile(@UploadedFile() file: Buffer) {
+    return Buffer.from(file.buffer).toString('base64');
   }
 }
