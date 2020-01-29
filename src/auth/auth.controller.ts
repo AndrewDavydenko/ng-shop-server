@@ -92,7 +92,7 @@ export class AuthController {
       const salt = await bcrypt.genSalt(numberTypeSalt);
       const hash: string = await bcrypt.hash(user.password, salt);
       const accessToken = await this.authService.createJWT(user);
-      const imgBasse64 = Buffer.from(avatar.buffer).toString('base64');
+      const imgBase64 = Buffer.from(avatar.buffer).toString('base64');
       const rn = require('random-number');
       const generator = rn.generator({
         integer: true,
@@ -103,7 +103,7 @@ export class AuthController {
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
-        avatar: imgBasse64,
+        avatar: imgBase64,
         password: hash,
       });
       await this.smsService.sendSms(phone, code);
@@ -118,10 +118,10 @@ export class AuthController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
-  @Post('check/code')
+  @Post('checkCode')
   @ApiOperation({ description: 'User checke unique code from sms' })
   @ApiResponse({
-    description: 'User success checke unique code from sms',
+    description: 'Checke unique code from sms',
     status: HttpStatus.OK,
   })
   @ApiResponse({
@@ -132,8 +132,7 @@ export class AuthController {
     description: 'Server error during sigin',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
-  // tslint:disable-next-line:no-any
-  public async checkUnique(@Body() code: any, @Res() res: Response) {
+  public async checkUnique(@Body() code: number, @Res() res: Response) {
     try {
       const user: UserDto = await this.usersService.findUser(code);
       delete user.password;
@@ -146,10 +145,5 @@ export class AuthController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
     }
-  }
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('files'))
-  public uploadFile(@UploadedFile() file: Buffer) {
-    return Buffer.from(file.buffer).toString('base64');
   }
 }

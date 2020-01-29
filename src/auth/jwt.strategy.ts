@@ -12,8 +12,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get('JWT_SECRETE'),
     });
   }
-
-  // tslint:disable-next-line:no-any
   public async validate(payload: { phone: string }) {
     // TODO SHOULD CHECK IN DB
     return { phone: payload.phone };

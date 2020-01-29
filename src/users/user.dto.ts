@@ -25,3 +25,9 @@ export class LoginDto {
   @ApiProperty()
   public readonly password!: string;
 }
+
+// tslint:disable-next-line:max-classes-per-file
+export class CheckUniqueCode {
+  @ApiProperty()
+  public readonly code!: number;
+}
