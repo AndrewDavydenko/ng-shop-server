@@ -13,7 +13,9 @@ export class UserDto {
   @ApiProperty()
   public readonly phone!: string;
   @ApiProperty()
-  public readonly unigCode!: string;
+  public readonly avatar!: string;
+  public readonly accessToken!: string;
+  public code!: number;
 }
 
 // tslint:disable-next-line:max-classes-per-file
@@ -22,4 +24,10 @@ export class LoginDto {
   public readonly phone!: string;
   @ApiProperty()
   public readonly password!: string;
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class CheckUniqueCode {
+  @ApiProperty()
+  public readonly code!: number;
 }

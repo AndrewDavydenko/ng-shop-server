@@ -1,11 +1,12 @@
+import { TasksModule } from './task/tasks.module';
+import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { SmsService } from './shared/services/sms.service';
 @Module({
-  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -18,7 +19,9 @@ import { UsersModule } from './users/users.module';
       }),
     }),
     UsersModule,
+    TasksModule,
+    AuthModule,
   ],
-  providers: [AppService],
+  providers: [AppService, SmsService],
 })
 export class AppModule {}

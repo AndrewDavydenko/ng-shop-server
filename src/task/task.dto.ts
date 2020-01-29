@@ -5,7 +5,7 @@ export class TaskDto {
   @ApiProperty()
   public readonly category!: string;
   @ApiProperty()
-  public readonly endDate!: Date;
+  public readonly duration!: number;
   @ApiProperty()
   public readonly equipment!: string;
   @ApiProperty()

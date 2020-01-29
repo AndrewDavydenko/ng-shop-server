@@ -8,9 +8,9 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
   category: {
     type: String,
   },
-  endDate: {
+  duration: {
     required: true,
-    type: Date,
+    type: Number,
   },
   equipment: {
     type: String,
@@ -25,11 +25,12 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
   },
   startDate: {
     required: true,
-    type: Date,
+    type: String,
   },
   taskName: {
     required: true,
     type: String,
+    unique: true,
   },
   where: {
     // some Mape coordinates
