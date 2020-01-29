@@ -7,6 +7,9 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
   address: {
     type: String,
   },
+  avatar: {
+    type: String,
+  },
   birthday: {
     type: Date,
   },

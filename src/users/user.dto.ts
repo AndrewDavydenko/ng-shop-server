@@ -12,6 +12,8 @@ export class UserDto {
   public readonly birthday!: Date;
   @ApiProperty()
   public readonly phone!: string;
+  @ApiProperty()
+  public readonly avatar!: string;
   public readonly accessToken!: string;
   public code!: number;
 }
