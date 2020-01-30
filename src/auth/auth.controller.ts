@@ -23,13 +23,13 @@ import { SmsService } from 'src/shared/services/sms.service';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
+  public imgBase64: string | undefined;
   public constructor(
     private readonly smsService: SmsService,
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService
   ) {}
-
   @Post('signin')
   @ApiOperation({ description: 'User sign in' })
   @ApiResponse({ description: 'User success sign in', status: HttpStatus.OK })
@@ -92,7 +92,11 @@ export class AuthController {
       const salt = await bcrypt.genSalt(numberTypeSalt);
       const hash: string = await bcrypt.hash(user.password, salt);
       const accessToken = await this.authService.createJWT(user);
-      const imgBase64 = Buffer.from(avatar.buffer).toString('base64');
+      if (avatar) {
+        this.imgBase64 = Buffer.from(avatar.buffer).toString('base64');
+      } else {
+        this.imgBase64 = '';
+      }
       const rn = require('random-number');
       const generator = rn.generator({
         integer: true,
@@ -103,7 +107,7 @@ export class AuthController {
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
-        avatar: imgBase64,
+        avatar: this.imgBase64,
         password: hash,
       });
       await this.smsService.sendSms(phone, code);
@@ -129,7 +133,7 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
   })
   @ApiResponse({
-    description: 'Server error during sigin',
+    description: 'Server error during checking unique code',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   public async checkUnique(@Body() code: number, @Res() res: Response) {

@@ -15,7 +15,6 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
   },
   code: {
     type: Number,
-    unique: true,
   },
   email: {
     required: true,
@@ -25,12 +24,10 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
   fullName: {
     required: true,
     type: String,
-    unique: true,
   },
   password: {
     required: true,
     type: String,
-    unique: false,
   },
   phone: {
     required: true,

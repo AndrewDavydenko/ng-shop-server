@@ -16,6 +16,7 @@ export class UsersService {
       .lean()
       .exec();
   }
+
   public async createUser(
     user: UserDto & { accessToken: string }
   ): Promise<UserDto> {

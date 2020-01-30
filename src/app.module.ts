@@ -1,3 +1,4 @@
+import { TasksModule } from './task/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -18,6 +19,7 @@ import { SmsService } from './shared/services/sms.service';
       }),
     }),
     UsersModule,
+    TasksModule,
     AuthModule,
   ],
   providers: [AppService, SmsService],
