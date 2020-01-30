@@ -40,47 +40,22 @@ export class TaskController {
         .json({ data: null, error });
     }
   }
-
   @UseGuards(AuthGuard('jwt'))
   @Get('findTasks')
-  @ApiOperation({ description: 'User is locking fo tasks' })
+  @ApiOperation({ description: 'User is locking fo task' })
   @ApiResponse({
-    description: 'Tasks founded successfully',
+    description: 'Task founded successfully',
     status: HttpStatus.OK,
   })
   @ApiResponse({
-    description: 'Server error  findTasks',
+    description: 'Server error  findTask',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
+  // tslint:disable-next-line:no-any
   public async findTasks(@Res() res: Response) {
     try {
       const tasks = await this.tasksService.findTasks();
       return res.status(HttpStatus.OK).json({ data: tasks, error: null });
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-  @UseGuards(AuthGuard('jwt'))
-  @Post('findTaskById')
-  @ApiOperation({ description: 'User is locking fo task by id' })
-  @ApiResponse({
-    description: 'Task foundById successfully',
-    status: HttpStatus.OK,
-  })
-  @ApiResponse({
-    description: 'Server error during findTaskById',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  // tslint:disable-next-line:no-any
-  public async findTaskById(@Body() request: any, @Res() res: Response) {
-    try {
-      const { query } = request;
-      const task = await this.tasksService.findTaskById(query);
-      return res.status(HttpStatus.OK).json({ data: task, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);

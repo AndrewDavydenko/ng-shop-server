@@ -19,17 +19,4 @@ export class TasksService {
       .lean()
       .exec();
   }
-  // tslint:disable-next-line:no-any
-  public async findTaskById(query: string): Promise<any> {
-    return this.taskModel
-      .findById(query, (res, reg) => {
-        if (reg) {
-          return reg;
-        } else {
-          return res;
-        }
-      })
-      .lean()
-      .exec();
-  }
 }

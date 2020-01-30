@@ -2,7 +2,6 @@ import { ConfigService } from '@nestjs/config';
 import {
   Body,
   Controller,
-  Get,
   HttpStatus,
   Post,
   Res,
@@ -19,18 +18,18 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto, UserDto } from 'src/users/user.dto';
-// import { SmsService } from 'src/shared/services/sms.service';
+import { SmsService } from 'src/shared/services/sms.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
+  public imgBase64: string | undefined;
   public constructor(
-    // private readonly smsService: SmsService,
+    private readonly smsService: SmsService,
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService
   ) {}
-
   @Post('signin')
   @ApiOperation({ description: 'User sign in' })
   @ApiResponse({ description: 'User success sign in', status: HttpStatus.OK })
@@ -93,7 +92,11 @@ export class AuthController {
       const salt = await bcrypt.genSalt(numberTypeSalt);
       const hash: string = await bcrypt.hash(user.password, salt);
       const accessToken = await this.authService.createJWT(user);
-      const imgBase64 = Buffer.from(avatar.buffer).toString('base64');
+      if (avatar) {
+        this.imgBase64 = Buffer.from(avatar.buffer).toString('base64');
+      } else {
+        this.imgBase64 = '';
+      }
       const rn = require('random-number');
       const generator = rn.generator({
         integer: true,
@@ -101,19 +104,13 @@ export class AuthController {
         min: 100000,
       });
       const code = generator();
-      // const counter(){
-      //   let counter;
-      //   return ++counter
-      // };
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
-        avatar: imgBase64,
+        avatar: this.imgBase64,
         password: hash,
       });
-      // tslint:disable-next-line:no-console
-      console.log(newUser, code);
-      // await this.smsService.sendSms(phone, code);
+      await this.smsService.sendSms(phone, code);
       delete newUser.password;
       return res.status(HttpStatus.OK).json({ data: accessToken, error: null });
     } catch (error) {
@@ -145,34 +142,6 @@ export class AuthController {
       delete user.password;
       delete user.code;
       return res.status(HttpStatus.OK).json({ data: user, error: null });
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-  @Get('getAllUsers')
-  @ApiOperation({ description: 'User getAllUsers' })
-  @ApiResponse({
-    description: 'User success getAllUsers',
-    status: HttpStatus.OK,
-  })
-  @ApiResponse({
-    description: 'Wrong credentials',
-    status: HttpStatus.UNAUTHORIZED,
-  })
-  @ApiResponse({
-    description: 'Server error during getAllUsers',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  public async getAllUsers(@Res() res: Response) {
-    try {
-      const allUsers = await this.usersService.findUsers();
-      // tslint:disable-next-line:no-console
-      console.log(allUsers);
-      return res.status(HttpStatus.OK).json({ data: allUsers, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);

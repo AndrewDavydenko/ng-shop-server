@@ -30,7 +30,6 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
   taskName: {
     required: true,
     type: String,
-    unique: true,
   },
   where: {
     // some Mape coordinates
