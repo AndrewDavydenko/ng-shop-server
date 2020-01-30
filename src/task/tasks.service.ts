@@ -8,15 +8,27 @@ export class TasksService {
     // tslint:disable-next-line:no-any
     @InjectModel('Tasks') private readonly taskModel: Model<any>
   ) {}
-
-  // public async findTaskByName(name: string): Promise<TaskDto> {}
   public async createTask(task: TaskDto): Promise<TaskDto> {
     const createTask = new this.taskModel(task);
     return createTask.save();
   }
+  // tslint:disable-next-line:no-any
   public async findTasks(): Promise<any> {
     return this.taskModel
       .find()
+      .lean()
+      .exec();
+  }
+  // tslint:disable-next-line:no-any
+  public async findTaskById(query: string): Promise<any> {
+    return this.taskModel
+      .findById(query, (res, reg) => {
+        if (reg) {
+          return reg;
+        } else {
+          return res;
+        }
+      })
       .lean()
       .exec();
   }

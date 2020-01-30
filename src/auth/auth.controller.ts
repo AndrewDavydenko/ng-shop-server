@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Res,
@@ -18,13 +19,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto, UserDto } from 'src/users/user.dto';
-import { SmsService } from 'src/shared/services/sms.service';
+// import { SmsService } from 'src/shared/services/sms.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   public constructor(
-    private readonly smsService: SmsService,
+    // private readonly smsService: SmsService,
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService
@@ -100,13 +101,19 @@ export class AuthController {
         min: 100000,
       });
       const code = generator();
+      // const counter(){
+      //   let counter;
+      //   return ++counter
+      // };
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
         avatar: imgBase64,
         password: hash,
       });
-      await this.smsService.sendSms(phone, code);
+      // tslint:disable-next-line:no-console
+      console.log(newUser, code);
+      // await this.smsService.sendSms(phone, code);
       delete newUser.password;
       return res.status(HttpStatus.OK).json({ data: accessToken, error: null });
     } catch (error) {
@@ -138,6 +145,34 @@ export class AuthController {
       delete user.password;
       delete user.code;
       return res.status(HttpStatus.OK).json({ data: user, error: null });
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+  @Get('getAllUsers')
+  @ApiOperation({ description: 'User getAllUsers' })
+  @ApiResponse({
+    description: 'User success getAllUsers',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Wrong credentials',
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiResponse({
+    description: 'Server error during getAllUsers',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  public async getAllUsers(@Res() res: Response) {
+    try {
+      const allUsers = await this.usersService.findUsers();
+      // tslint:disable-next-line:no-console
+      console.log(allUsers);
+      return res.status(HttpStatus.OK).json({ data: allUsers, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);

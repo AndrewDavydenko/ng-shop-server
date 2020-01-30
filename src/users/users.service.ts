@@ -16,6 +16,10 @@ export class UsersService {
       .lean()
       .exec();
   }
+  // tslint:disable-next-line:no-any
+  public async findUsers(): Promise<any> {
+    return this.userModel.find();
+  }
   public async createUser(
     user: UserDto & { accessToken: string }
   ): Promise<UserDto> {
