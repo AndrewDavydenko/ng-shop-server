@@ -22,6 +22,12 @@ export class TasksService {
   // tslint:disable-next-line:no-any
   public async findNearestTasks(query: any): Promise<any> {
     const { radius, location } = query;
+    let checkedRadius: number;
+    if (radius) {
+      checkedRadius = radius;
+    } else {
+      checkedRadius = 1000;
+    }
     return this.taskModel.find({
       location: {
         $near: {
@@ -29,7 +35,7 @@ export class TasksService {
             coordinates: location,
             type: 'Point',
           },
-          $maxDistance: radius,
+          $maxDistance: checkedRadius,
         },
       },
     });
