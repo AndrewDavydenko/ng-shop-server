@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose';
 
 export const taskSchema: mongoose.Schema = new mongoose.Schema({
-  castomer: {
-    required: true,
+  category: {
     type: String,
   },
-  category: {
+  customer: {
+    required: true,
     type: String,
   },
   duration: {
@@ -18,6 +18,9 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
   exequtor: {
     required: true,
     type: String,
+  },
+  location: {
+    type: [],
   },
   rate: {
     required: true,

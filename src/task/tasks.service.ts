@@ -19,4 +19,19 @@ export class TasksService {
       .lean()
       .exec();
   }
+  // tslint:disable-next-line:no-any
+  public async findNearestTasks(query: any): Promise<any> {
+    const { radius, location } = query;
+    return this.taskModel.find({
+      location: {
+        $near: {
+          $geometry: {
+            coordinates: location,
+            type: 'Point',
+          },
+          $maxDistance: radius,
+        },
+      },
+    });
+  }
 }

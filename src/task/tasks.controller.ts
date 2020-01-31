@@ -1,3 +1,4 @@
+import { FindNearestTasksDto } from './tasks.dto';
 import {
   Body,
   Controller,
@@ -55,6 +56,33 @@ export class TaskController {
   public async findTasks(@Res() res: Response) {
     try {
       const tasks = await this.tasksService.findTasks();
+      return res.status(HttpStatus.OK).json({ data: tasks, error: null });
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Post('findNearestTasks')
+  @ApiOperation({ description: 'User is locking fo nearestTasks' })
+  @ApiResponse({
+    description: 'nearestTasks founded successfully',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error  findNearestTasks',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  // tslint:disable-next-line:no-any
+  public async findNearestTasks(
+    @Body() query: FindNearestTasksDto,
+    @Res() res: Response
+  ) {
+    try {
+      const tasks = await this.tasksService.findNearestTasks(query);
       return res.status(HttpStatus.OK).json({ data: tasks, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
