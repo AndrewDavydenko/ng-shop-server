@@ -22,15 +22,15 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
   location: {
     type: [],
   },
+  name: {
+    required: true,
+    type: String,
+  },
   rate: {
     required: true,
     type: Number,
   },
   startDate: {
-    required: true,
-    type: String,
-  },
-  taskName: {
     required: true,
     type: String,
   },

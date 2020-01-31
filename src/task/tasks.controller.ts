@@ -1,4 +1,4 @@
-import { FindNearestTasksDto } from './tasks.dto';
+import { FindNearestTasksDto } from './task.dto';
 import {
   Body,
   Controller,
@@ -42,14 +42,14 @@ export class TaskController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('findTasks')
+  @Get('find')
   @ApiOperation({ description: 'User is locking fo task' })
   @ApiResponse({
     description: 'Task founded successfully',
     status: HttpStatus.OK,
   })
   @ApiResponse({
-    description: 'Server error  findTask',
+    description: 'Server error  find',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line:no-any
@@ -66,14 +66,14 @@ export class TaskController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
-  @Post('findNearestTasks')
-  @ApiOperation({ description: 'User is locking fo nearestTasks' })
+  @Post('nearest')
+  @ApiOperation({ description: 'User is locking fo nearest' })
   @ApiResponse({
-    description: 'nearestTasks founded successfully',
+    description: 'nearest founded successfully',
     status: HttpStatus.OK,
   })
   @ApiResponse({
-    description: 'Server error  findNearestTasks',
+    description: 'Server error nearest',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line:no-any

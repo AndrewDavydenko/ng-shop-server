@@ -15,7 +15,15 @@ export class TaskDto {
   @ApiProperty()
   public readonly startDate!: Date;
   @ApiProperty()
-  public readonly taskName!: string;
+  public readonly name!: string;
   @ApiProperty()
   public readonly where!: string;
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class FindNearestTasksDto {
+  @ApiProperty()
+  public readonly location!: number[];
+  @ApiProperty()
+  public readonly password!: number;
 }
