@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -54,9 +55,12 @@ export class TaskController {
   })
   // tslint:disable-next-line:no-any
   public async findTasks(@Res() res: Response) {
+    // const arr = await this.tasksService.getCounter();
     try {
       const tasks = await this.tasksService.findTasks();
-      return res.status(HttpStatus.OK).json({ data: tasks, error: null });
+      return res
+        .status(HttpStatus.OK)
+        .json({ data: tasks, total: tasks.length, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);
@@ -78,10 +82,14 @@ export class TaskController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line:no-any
-  public async findClosestTasks(@Res() res: Response) {
+  public async findClosestTasks(@Query() page: any, @Res() res: Response) {
+    const arr = await this.tasksService.getCounter(true);
+    // console.log(arr.length);
     try {
-      const tasks = await this.tasksService.findClosestTasks();
-      return res.status(HttpStatus.OK).json({ data: tasks, error: null });
+      const tasks = await this.tasksService.findClosestTasks(page);
+      return res
+        .status(HttpStatus.OK)
+        .json({ Data: tasks, total: arr.length, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);
