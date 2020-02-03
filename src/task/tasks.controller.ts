@@ -65,6 +65,32 @@ export class TaskController {
         .json({ data: null, error });
     }
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('closestDayTasks')
+  @ApiOperation({ description: 'User is locking fo closestDayTasks' })
+  @ApiResponse({
+    description: 'closestDayTasks founded successfully',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error  closestDayTasks',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  // tslint:disable-next-line:no-any
+  public async findClosestTasks(@Res() res: Response) {
+    try {
+      const tasks = await this.tasksService.findClosestTasks();
+      return res.status(HttpStatus.OK).json({ data: tasks, error: null });
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Post('nearest')
   @ApiOperation({ description: 'User is locking fo nearest' })

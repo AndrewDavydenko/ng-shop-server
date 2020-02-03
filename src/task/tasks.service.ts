@@ -40,4 +40,15 @@ export class TasksService {
       },
     });
   }
+  // tslint:disable-next-line:no-any
+  public async findClosestTasks(): Promise<any> {
+    const today = new Date();
+    return this.taskModel.find({
+      startDate: {
+        $gte: today.getTime(),
+
+        $lte: today.setDate(today.getDate() + 1),
+      },
+    });
+  }
 }
