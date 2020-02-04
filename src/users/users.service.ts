@@ -23,4 +23,11 @@ export class UsersService {
     const createdUser = new this.userModel(user);
     return createdUser.save();
   }
+  // tslint:disable-next-line:no-any
+  public async updateUser(query: any, _id: number): Promise<any> {
+    return this.userModel.findOneAndUpdate({ id: _id }, query);
+  }
+  public async findUsers() {
+    return this.userModel.find({});
+  }
 }

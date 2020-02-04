@@ -27,3 +27,10 @@ export class FindNearestTasksDto {
   @ApiProperty()
   public readonly password!: number;
 }
+// tslint:disable-next-line:max-classes-per-file
+export class UpdateTaskDto {
+  @ApiProperty()
+  public readonly query!: object;
+  @ApiProperty()
+  public readonly set!: object;
+}

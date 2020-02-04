@@ -1,3 +1,4 @@
+import { CategoriesModule } from './categories/categories.module';
 import { TasksModule } from './task/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { SmsService } from './shared/services/sms.service';
     UsersModule,
     TasksModule,
     AuthModule,
+    CategoriesModule,
   ],
   providers: [AppService, SmsService],
 })

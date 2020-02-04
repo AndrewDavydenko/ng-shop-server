@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { TaskDto } from './task.dto';
+import { TaskDto, UpdateTaskDto } from './task.dto';
 @Injectable()
 export class TasksService {
   public skip: number | undefined;
@@ -22,6 +22,11 @@ export class TasksService {
       .find()
       .lean()
       .exec();
+  }
+
+  // tslint:disable-next-line:no-any
+  public async updateTask(query: UpdateTaskDto, _id: number): Promise<any> {
+    return this.taskModel.findOneAndUpdate({ id: _id }, query);
   }
   // tslint:disable-next-line:no-any
   public async findNearestTasks(query: any): Promise<any> {
@@ -74,15 +79,8 @@ export class TasksService {
 
   // tslint:disable-next-line:no-any
   public paginator(page: any, limit: number = 10) {
-    page
-      ? (this.pageValue = Number(Object.keys(page)[0]))
-      : (this.pageValue = 0);
-    // tslint:disable-next-line:use-isnan
-    if (
-      !Number(Object.keys(page)[0]) ||
-      this.pageValue === 0 ||
-      this.pageValue === 1
-    ) {
+    page ? (this.pageValue = Number(page)) : (this.pageValue = 0);
+    if (!Number(page) || this.pageValue === 0 || this.pageValue === 1) {
       this.skip = 0;
     } else {
       this.skip = (this.pageValue - 1) * 10;

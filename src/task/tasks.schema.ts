@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 export const taskSchema: mongoose.Schema = new mongoose.Schema({
   category: {
-    type: String,
+    type: [],
   },
   customer: {
     required: true,
@@ -34,9 +34,12 @@ export const taskSchema: mongoose.Schema = new mongoose.Schema({
     required: true,
     type: Number,
   },
-  where: {
-    // some Mape coordinates
-    required: true,
-    type: String,
+});
+export const taskUpdateSchema: mongoose.Schema = new mongoose.Schema({
+  query: {
+    type: Object,
+  },
+  set: {
+    type: Object,
   },
 });

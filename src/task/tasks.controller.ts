@@ -4,7 +4,9 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
+  Put,
   Query,
   Res,
   UseGuards,
@@ -43,6 +45,36 @@ export class TaskController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
+  @Put('update/:id')
+  @ApiOperation({ description: 'updute task' })
+  @ApiResponse({
+    description: ' update task success',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error update task',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  // tslint:disable-next-line:no-any
+  public async updateTask(
+    // tslint:disable-next-line:no-any
+    @Param('id') param: any,
+    // tslint:disable-next-line:no-any
+    @Body() task: any,
+    @Res() res: Response
+  ) {
+    try {
+      const newTask = await this.tasksService.updateTask(task, param.id);
+      return res.status(HttpStatus.OK).json({ data: newTask, error: null });
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+  @UseGuards(AuthGuard('jwt'))
   @Get('find')
   @ApiOperation({ description: 'User is locking fo task' })
   @ApiResponse({
@@ -55,7 +87,6 @@ export class TaskController {
   })
   // tslint:disable-next-line:no-any
   public async findTasks(@Res() res: Response) {
-    // const arr = await this.tasksService.getCounter();
     try {
       const tasks = await this.tasksService.findTasks();
       return res
@@ -84,9 +115,8 @@ export class TaskController {
   // tslint:disable-next-line:no-any
   public async findClosestTasks(@Query() page: any, @Res() res: Response) {
     const arr = await this.tasksService.getCounter(true);
-    // console.log(arr.length);
     try {
-      const tasks = await this.tasksService.findClosestTasks(page);
+      const tasks = await this.tasksService.findClosestTasks(page.page);
       return res
         .status(HttpStatus.OK)
         .json({ Data: tasks, total: arr.length, error: null });
