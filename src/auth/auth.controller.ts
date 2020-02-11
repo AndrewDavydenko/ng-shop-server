@@ -18,14 +18,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto, UserDto } from 'src/users/user.dto';
-import { SmsService } from 'src/shared/services/sms.service';
+// import { SmsService } from 'src/shared/services/sms.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   public imgBase64: string | undefined;
   public constructor(
-    private readonly smsService: SmsService,
+    // private readonly smsService: SmsService,
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService
@@ -41,20 +41,20 @@ export class AuthController {
     description: 'Server error during sigin',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
-  public async signin(@Body() user: LoginDto, @Res() res: Response) {
+  public async signin(@Body() query: LoginDto, @Res() res: Response) {
     try {
-      const { phone, password: lpassword } = user;
-      const { password, ...currentUser } = await this.usersService.findUser({
+      const { phone, password } = query;
+      const user = await this.usersService.findUser({
         phone,
       });
 
-      if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
+      if (!user || (user && !(await bcrypt.compare(password, user.password)))) {
         return res.status(HttpStatus.UNAUTHORIZED).json({
           data: null,
           error: 'Invalid username and/or password',
         });
       }
-      return res.status(HttpStatus.OK).json({ data: currentUser, error: null });
+      return res.status(HttpStatus.OK).json({ data: user, error: null });
     } catch (error) {
       // tslint:disable-next-line:no-console
       console.log(error);
@@ -110,7 +110,9 @@ export class AuthController {
         avatar: this.imgBase64,
         password: hash,
       });
-      await this.smsService.sendSms(phone, code);
+      // tslint:disable-next-line:no-console
+      console.log(code);
+      // await this.smsService.sendSms(phone, code);
       delete newUser.password;
       return res.status(HttpStatus.OK).json({ data: accessToken, error: null });
     } catch (error) {

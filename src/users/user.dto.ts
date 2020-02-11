@@ -9,7 +9,7 @@ export class UserDto {
   @ApiProperty()
   public readonly address!: string;
   @ApiProperty()
-  public readonly birthday!: Date;
+  public readonly birthday!: string;
   @ApiProperty()
   public readonly phone!: string;
   @ApiProperty()

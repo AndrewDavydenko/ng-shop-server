@@ -11,7 +11,7 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
     type: String,
   },
   birthday: {
-    type: Date,
+    type: String,
   },
   code: {
     type: Number,
