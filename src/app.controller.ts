@@ -27,11 +27,11 @@ export class AppController {
   })
   public async signin(@Body() user: LoginDto, @Res() res: Response) {
     try {
-      const { phone, password: lpassword } = user;
+      const { username, password: lpassword } = user;
       const {
         password,
         ...userFromDb
-      }: UserDto = await this.usersService.findUser(phone);
+      }: UserDto = await this.usersService.findUser(username);
       if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
         return res.status(HttpStatus.UNAUTHORIZED).json({
           data: null,
@@ -61,8 +61,8 @@ export class AppController {
     @Res() res: Response
   ): Promise<Response> {
     try {
-      const { phone } = user;
-      const userInDb = await this.usersService.findUser(phone);
+      const { username } = user;
+      const userInDb = await this.usersService.findUser(username);
       if (userInDb) {
         return res.status(HttpStatus.CONFLICT).json({
           data: null,

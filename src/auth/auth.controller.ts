@@ -18,14 +18,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto, UserDto } from 'src/users/user.dto';
-// import { SmsService } from 'src/shared/services/sms.service';
-
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   public imgBase64: string | undefined;
   public constructor(
-    // private readonly smsService: SmsService,
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService
@@ -43,9 +40,9 @@ export class AuthController {
   })
   public async signin(@Body() query: LoginDto, @Res() res: Response) {
     try {
-      const { phone, password } = query;
+      const { username, password } = query;
       const user = await this.usersService.findUser({
-        phone,
+        username,
       });
 
       if (!user || (user && !(await bcrypt.compare(password, user.password)))) {
@@ -56,8 +53,6 @@ export class AuthController {
       }
       return res.status(HttpStatus.OK).json({ data: user, error: null });
     } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
@@ -80,8 +75,8 @@ export class AuthController {
     @UploadedFile() avatar: Buffer
   ): Promise<Response> {
     try {
-      const { phone } = user;
-      const userInDb = await this.usersService.findUser({ phone });
+      const { username } = user;
+      const userInDb = await this.usersService.findUser({ username });
       if (userInDb) {
         return res.status(HttpStatus.CONFLICT).json({
           data: null,
@@ -97,27 +92,14 @@ export class AuthController {
       } else {
         this.imgBase64 = '';
       }
-      const rn = require('random-number');
-      const generator = rn.generator({
-        integer: true,
-        max: 999999,
-        min: 100000,
-      });
-      const code = generator();
       const newUser = await this.usersService.createUser({
         ...user,
         accessToken,
-        avatar: this.imgBase64,
         password: hash,
       });
-      // tslint:disable-next-line:no-console
-      console.log(code);
-      // await this.smsService.sendSms(phone, code);
       delete newUser.password;
       return res.status(HttpStatus.OK).json({ data: accessToken, error: null });
     } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
@@ -142,11 +124,8 @@ export class AuthController {
     try {
       const user: UserDto = await this.usersService.findUser(code);
       delete user.password;
-      delete user.code;
       return res.status(HttpStatus.OK).json({ data: user, error: null });
     } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error);
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });

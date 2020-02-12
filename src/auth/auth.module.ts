@@ -1,4 +1,3 @@
-import { SmsService } from './../shared/services/sms.service';
 import { JwtStrategy } from './jwt.strategy';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -12,7 +11,6 @@ import { AuthController } from './auth.controller';
   controllers: [AuthController],
   exports: [AuthService],
   imports: [
-    SmsService,
     UsersModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -23,6 +21,6 @@ import { AuthController } from './auth.controller';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy, SmsService],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

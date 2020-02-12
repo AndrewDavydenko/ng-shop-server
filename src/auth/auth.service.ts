@@ -8,7 +8,7 @@ export class AuthService {
 
   // tslint:disable-next-line:no-any
   public async createJWT(user: LoginDto): Promise<string> {
-    const payload = { phone: user.phone };
+    const payload = { username: user.username };
     return this.jwtService.sign(payload);
   }
 }
