@@ -2,9 +2,7 @@ import { FeedbackDto } from './feedbacks.dto';
 import {
   Body,
   Controller,
-  Get,
   HttpStatus,
-  Param,
   Post,
   Res,
   UseGuards,
@@ -40,31 +38,6 @@ export class FeedbacksController {
       return res
         .status(HttpStatus.OK)
         .json({ data: createdFeedback, error: null });
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-  @UseGuards(AuthGuard('jwt'))
-  @Get(':idProduct')
-  @ApiOperation({ description: 'Create new feedback' })
-  @ApiResponse({
-    description: 'Feedback was successfully created',
-    status: HttpStatus.OK,
-  })
-  @ApiResponse({
-    description: 'Server error during create new product',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  public async getFeedbacks(
-    // tslint:disable-next-line: no-any
-    @Param('idProduct') param: any,
-    @Res() res: Response
-  ) {
-    try {
-      const feedbacks = await this.feedbacksService.getFeedbacks(param);
-      return res.status(HttpStatus.OK).json({ data: feedbacks, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

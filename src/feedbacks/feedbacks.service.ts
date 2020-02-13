@@ -12,11 +12,4 @@ export class FeedbacksService {
     const createFeedback = new this.feedbackModel(feedback);
     return createFeedback.save();
   }
-  // tslint:disable-next-line: no-any
-  public async getFeedbacks(idProduct: string): Promise<any> {
-    return await this.feedbackModel
-      .find({ idProduct })
-      .lean()
-      .exec();
-  }
 }

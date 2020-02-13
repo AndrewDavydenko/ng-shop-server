@@ -4,8 +4,6 @@ export class FeedbackDto {
   @ApiProperty()
   public readonly idProduct!: string;
   @ApiProperty()
-  public readonly idUser!: string;
-  @ApiProperty()
   public readonly rate!: number;
   @ApiProperty()
   public readonly advantages!: string;

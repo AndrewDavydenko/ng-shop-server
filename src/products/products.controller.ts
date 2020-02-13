@@ -109,7 +109,7 @@ export class ProductsController {
     try {
       const updatedProduct = await this.productsService.updateProduct(
         product,
-        param.id
+        param
       );
       return res
         .status(HttpStatus.OK)

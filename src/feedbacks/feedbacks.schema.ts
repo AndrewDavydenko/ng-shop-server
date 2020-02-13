@@ -11,11 +11,7 @@ export const feedbackSchema: mongoose.Schema = new mongoose.Schema({
   },
   idProduct: {
     required: true,
-    type: String,
-  },
-  idUser: {
-    required: true,
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
   },
   limitations: {
     required: true,
