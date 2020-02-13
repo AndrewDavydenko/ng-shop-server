@@ -21,7 +21,7 @@ import { Response } from 'express';
 export class ProductsController {
   public constructor(private readonly productsService: ProductsService) {}
   @UseGuards(AuthGuard('jwt'))
-  @Post('add-product')
+  @Post('')
   @ApiOperation({ description: 'Create new product' })
   @ApiResponse({
     description: 'New product was successfully created',
@@ -46,7 +46,7 @@ export class ProductsController {
         .json({ data: null, error });
     }
   }
-  @Get('get')
+  @Get('')
   @ApiOperation({ description: 'User is looking for a products' })
   @ApiResponse({
     description: 'Products founded successfully',
@@ -66,7 +66,7 @@ export class ProductsController {
         .json({ data: null, error });
     }
   }
-  @Get('get/:id')
+  @Get(':id')
   @ApiOperation({ description: 'User is looking for a product' })
   @ApiResponse({
     description: 'Product founded successfully',
@@ -88,7 +88,7 @@ export class ProductsController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
-  @Put('update-product/:id')
+  @Put(':id')
   @ApiOperation({ description: 'Updute product' })
   @ApiResponse({
     description: ' Update product success',
@@ -122,7 +122,7 @@ export class ProductsController {
     }
   }
   @UseGuards(AuthGuard('jwt'))
-  @Delete('delete-product/:id')
+  @Delete(':id')
   @ApiOperation({ description: 'Delete product' })
   @ApiResponse({
     description: ' Delete product success',

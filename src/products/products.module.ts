@@ -1,8 +1,6 @@
 import { ProductsService } from './products.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { productSchema } from './products.schema';
 import { ProductsController } from './products.controller';
 
@@ -11,8 +9,7 @@ import { ProductsController } from './products.controller';
   exports: [ProductsService],
   imports: [
     MongooseModule.forFeature([{ name: 'Products', schema: productSchema }]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  providers: [ProductsService, JwtStrategy],
+  providers: [ProductsService],
 })
 export class ProductsModule {}

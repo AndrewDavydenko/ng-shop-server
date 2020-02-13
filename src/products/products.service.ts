@@ -30,10 +30,8 @@ export class ProductsService {
   ): Promise<ProductDto> {
     return this.productModel.findOneAndUpdate({ id: _id }, query);
   }
-  public async deleteProduct(_id: string): Promise<ProductDto> {
-    return this.productModel
-      .findOne({ _id })
-      .remove()
-      .exec();
+  // tslint:disable-next-line: no-any
+  public async deleteProduct(_id: string): Promise<any> {
+    return this.productModel.remove({ _id }).exec();
   }
 }
