@@ -11,6 +11,7 @@ import { CategoriesModule } from './categories/categories.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'production' ? '.production.env' : '.env',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
