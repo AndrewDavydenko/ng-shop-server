@@ -10,6 +10,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'production' ? '.production.env' : '.env',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
