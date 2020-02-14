@@ -6,9 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import bodyParser = require('body-parser');
 // tslint:disable-next-line:typedef
 async function bootstrap() {
-  const app: INestApplication = await NestFactory.create(AppModule, {
-      cors: true
-  });
+  const app: INestApplication = await NestFactory.create(AppModule);
   const options = new DocumentBuilder()
     .setTitle('WOSIDO')
     .setDescription('The WOSIDO API')
@@ -32,6 +30,13 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   const configService: ConfigService = app.get(ConfigService);
   const port: string = configService.get('PORT') as string;
+  app.enableCors({
+  "origin": "*",
+  "methods": "OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": true,
+  "credentials": true,
+  "optionsSuccessStatus": 204
+})
   await app.listen(process.env.PORT || port);
 }
 bootstrap();
