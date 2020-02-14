@@ -22,16 +22,30 @@ export class ProductsService {
           localField: '_id',
         },
       },
-      { $unwind: '$feedbacks' },
+      { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
+
       {
         $group: {
           _id: '$_id',
           description: { $first: '$description' },
-          feedbacksCount: { $sum: 1 },
+          feedbacksCount: {
+            $sum: {
+              $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
+            },
+          },
+          idSubCategory: { $first: '$idSubCategory' },
           name: { $first: '$name' },
           price: { $first: '$price' },
           rating: { $avg: '$feedbacks.rate' },
           status: { $first: '$status' },
+        },
+      },
+      {
+        $lookup: {
+          as: 'subcategory',
+          foreignField: '_id',
+          from: 'subcategories',
+          localField: 'idSubCategory',
         },
       },
     ]);

@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,6 +24,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
     FeedbacksModule,
     ProductsModule,
     AuthModule,
+    CategoriesModule,
   ],
   providers: [AppService],
 })
