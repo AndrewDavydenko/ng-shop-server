@@ -5,10 +5,7 @@ export const productSchema: mongoose.Schema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  idSubCategory: {
-    required: true,
-    type: mongoose.Schema.Types.ObjectId,
-  },
+  images: { required: false, type: Array },
   name: {
     required: true,
     type: String,
@@ -17,8 +14,13 @@ export const productSchema: mongoose.Schema = new mongoose.Schema({
     required: true,
     type: Number,
   },
+
   status: {
     required: true,
     type: Boolean,
+  },
+  subCategory: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
   },
 });
