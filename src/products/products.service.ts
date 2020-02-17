@@ -12,8 +12,34 @@ export class ProductsService {
     const createProduct = new this.productModel(product);
     return createProduct.save();
   }
-  public async findProdcuts(): Promise<ProductDto[]> {
+  public async findProdcuts(
+    searchByName: string,
+    subCat: string,
+    prices: string,
+    status: boolean
+  ): Promise<ProductDto[]> {
+    const querySubCat =
+      (subCat && { idSubCategory: new Types.ObjectId(subCat) }) || {};
+    const queryComparePrices =
+      (prices && {
+        price: {
+          $gt: parseInt(prices.split(',')[0], 10),
+          $lt: parseInt(prices.split(',')[1], 10),
+        },
+      }) ||
+      {};
+    const queryStatus = (status && { status }) || { status: false };
     return this.productModel.aggregate([
+      {
+        $match: {
+          $and: [
+            { name: { $regex: searchByName || '', $options: 'i' } },
+            querySubCat,
+            queryComparePrices,
+            queryStatus,
+          ],
+        },
+      },
       {
         $lookup: {
           as: 'feedbacks',
@@ -23,7 +49,6 @@ export class ProductsService {
         },
       },
       { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
-
       {
         $group: {
           _id: '$_id',
@@ -38,14 +63,6 @@ export class ProductsService {
           price: { $first: '$price' },
           rating: { $avg: '$feedbacks.rate' },
           status: { $first: '$status' },
-        },
-      },
-      {
-        $lookup: {
-          as: 'subcategory',
-          foreignField: '_id',
-          from: 'subcategories',
-          localField: 'idSubCategory',
         },
       },
     ]);

@@ -10,8 +10,9 @@ import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'production' ? '.production.env' : '.env',
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'production' ? '.production.env' : '.env',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

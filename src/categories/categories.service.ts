@@ -24,6 +24,15 @@ export class CategoriesService {
   }
   // tslint:disable-next-line: no-any
   public async findCategoies(): Promise<any[]> {
-    return this.categoryModel.aggregate([]);
+    return this.categoryModel.aggregate([
+      {
+        $lookup: {
+          as: 'subCategories',
+          foreignField: 'idCategory',
+          from: 'subcategories',
+          localField: '_id',
+        },
+      },
+    ]);
   }
 }

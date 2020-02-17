@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { ParseBool } from './parseBool.pipe';
 
 @ApiTags('products')
 @Controller('products')
@@ -56,9 +58,20 @@ export class ProductsController {
     description: 'Server error  find',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
-  public async findProducts(@Res() res: Response) {
+  public async findProducts(
+    @Res() res: Response,
+    @Query('text') searchByName: string,
+    @Query('subcategory') subCat: string,
+    @Query('price') price: string,
+    @Query('status', new ParseBool()) status: boolean
+  ) {
     try {
-      const products = await this.productsService.findProdcuts();
+      const products = await this.productsService.findProdcuts(
+        searchByName,
+        subCat,
+        price,
+        status
+      );
       return res.status(HttpStatus.OK).json({ data: products, error: null });
     } catch (error) {
       return res
