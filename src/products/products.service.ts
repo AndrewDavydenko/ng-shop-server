@@ -1,12 +1,12 @@
 import { ProductDto } from './products.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import * as mongoose from 'mongoose';
 @Injectable()
 export class ProductsService {
   public constructor(
     // tslint:disable-next-line:no-any
-    @InjectModel('Products') private readonly productModel: Model<any>
+    @InjectModel('Products') private readonly productModel: mongoose.Model<any>
   ) {}
   public async createProduct(product: ProductDto): Promise<ProductDto> {
     const createProduct = new this.productModel(product);
@@ -18,8 +18,12 @@ export class ProductsService {
     prices: string,
     status: boolean
   ): Promise<ProductDto[]> {
-    const querySubCat =
-      (subCat && { idSubCategory: new Types.ObjectId(subCat) }) || {};
+    let querySubCat = {};
+    if (subCat) {
+      querySubCat = { subCategory: new mongoose.Types.ObjectId(subCat) };
+    }
+    // const querySubCat =
+    //   (subCat && { subCategory: Types.ObjectId(subCat) }) || {};
     const queryComparePrices =
       (prices && {
         price: {
@@ -29,7 +33,6 @@ export class ProductsService {
       }) ||
       {};
     const queryStatus = (status && { status }) || {};
-
     return this.productModel.aggregate([
       {
         $match: {
@@ -44,7 +47,7 @@ export class ProductsService {
       {
         $lookup: {
           as: 'feedbacks',
-          foreignField: 'idProduct',
+          foreignField: 'product',
           from: 'feedbacks',
           localField: '_id',
         },
@@ -59,23 +62,23 @@ export class ProductsService {
               $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
             },
           },
-          idSubCategory: { $first: '$idSubCategory' },
           images: { $first: '$images' },
           name: { $first: '$name' },
           price: { $first: '$price' },
           rating: { $avg: '$feedbacks.rate' },
           status: { $first: '$status' },
+          subCategory: { $first: '$subCategory' },
         },
       },
     ]);
   }
   public async findProdcut(_id: string): Promise<ProductDto[]> {
     return this.productModel.aggregate([
-      { $match: { _id: new Types.ObjectId(_id) } },
+      { $match: { _id: mongoose.Types.ObjectId(_id) } },
       {
         $lookup: {
           as: 'comments',
-          foreignField: 'idProduct',
+          foreignField: 'product',
           from: 'feedbacks',
           localField: '_id',
         },

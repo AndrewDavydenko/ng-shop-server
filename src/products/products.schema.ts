@@ -14,13 +14,12 @@ export const productSchema: mongoose.Schema = new mongoose.Schema({
     required: true,
     type: Number,
   },
-
   status: {
     required: true,
     type: Boolean,
   },
   subCategory: {
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
   },
 });

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class FeedbackDto {
   @ApiProperty()
-  public readonly idProduct!: string;
+  public readonly product!: string;
   @ApiProperty()
   public readonly rate!: number;
   @ApiProperty()

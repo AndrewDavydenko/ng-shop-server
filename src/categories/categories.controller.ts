@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UseGuards,
@@ -71,7 +72,7 @@ export class CategoriesController {
         .json({ data: null, error });
     }
   }
-
+  @UseGuards(AuthGuard('jwt'))
   @Get('')
   @ApiOperation({ description: 'Categories' })
   @ApiResponse({
@@ -83,9 +84,33 @@ export class CategoriesController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line: no-any
-  public async findProduct(@Res() res: Response) {
+  public async findCategory(@Res() res: Response) {
     try {
       const categories = await this.categoriesService.findCategoies();
+      return res.status(HttpStatus.OK).json({ data: categories, error: null });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ data: null, error });
+    }
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('sub/:id')
+  @ApiOperation({ description: 'SubCategories' })
+  @ApiResponse({
+    description: 'SubCategories founded successfully',
+    status: HttpStatus.OK,
+  })
+  @ApiResponse({
+    description: 'Server error find',
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  // tslint:disable-next-line: no-any
+  public async findSubCategory(@Param() param: any, @Res() res: Response) {
+    try {
+      const categories = await this.categoriesService.findSubCategoies(
+        param.id
+      );
       return res.status(HttpStatus.OK).json({ data: categories, error: null });
     } catch (error) {
       return res

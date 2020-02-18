@@ -74,6 +74,8 @@ export class ProductsController {
       );
       return res.status(HttpStatus.OK).json({ data: products, error: null });
     } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ data: null, error });
