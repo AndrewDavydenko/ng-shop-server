@@ -1,15 +1,16 @@
-import { IBaseOrderProduct, IOrderProduct } from './../dist/data/interfaces.d';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as mongoose from 'mongoose';
 import {
   IBaseCategory,
   IBaseOrder,
+  IBaseOrderProduct,
   IBaseProduct,
   IBaseSubcategory,
   ICategory,
   IJsonData,
   IOrder,
+  IOrderProduct,
   IProduct,
   ISubCategory,
 } from './json-interfaces';
