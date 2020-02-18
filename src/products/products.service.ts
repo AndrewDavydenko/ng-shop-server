@@ -28,7 +28,8 @@ export class ProductsService {
         },
       }) ||
       {};
-    const queryStatus = (status && { status }) || { status: false };
+    const queryStatus = (status && { status }) || {};
+
     return this.productModel.aggregate([
       {
         $match: {

@@ -1,64 +1,20 @@
+import { IBaseOrderProduct, IOrderProduct } from './../dist/data/interfaces.d';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as mongoose from 'mongoose';
+import {
+  IBaseCategory,
+  IBaseOrder,
+  IBaseProduct,
+  IBaseSubcategory,
+  ICategory,
+  IJsonData,
+  IOrder,
+  IProduct,
+  ISubCategory,
+} from './json-interfaces';
 
-interface IBaseCategory {
-  id: string;
-  title: string;
-  count: number;
-  weight: number;
-}
-
-interface IBaseSubcategory {
-  id: string;
-  title: string;
-  count: number;
-  category: string;
-  weight: number;
-}
-interface IBaseImage {
-  url: string;
-  source: string;
-}
-interface IBaseProduct {
-  id: string;
-  title: string;
-  description: string;
-  quantity: number;
-  subcategory: string;
-  status: boolean;
-  images: IBaseImage[];
-  price: number;
-  discount: number;
-}
-
-interface ICategory {
-  _id: mongoose.Types.ObjectId;
-  name: string;
-}
-
-interface ISubCategory {
-  _id: mongoose.Types.ObjectId;
-  name: string;
-}
-
-interface IProduct {
-  _id: mongoose.Types.ObjectId;
-  name: string;
-  description: string;
-  subCategory: mongoose.Types.ObjectId;
-  images: IBaseImage[];
-  price: number;
-  status: boolean;
-}
-
-interface IJsonData {
-  categories: IBaseCategory[];
-  subcategories: IBaseSubcategory[];
-  products: IBaseProduct[];
-}
-
-const fileName = 'db-base.json';
+const fileName = 'original-data.json';
 
 main();
 
@@ -71,10 +27,10 @@ async function main() {
     const json: IJsonData = JSON.parse(buffer.toString()) as IJsonData;
     let subCategories: ISubCategory[] = [];
     let products: IProduct[] = [];
+    let orders: IOrder[] = [];
     const categories: ICategory[] = json.categories.map(
       ({ title, id }: IBaseCategory): ICategory => {
         const categoryId: mongoose.Types.ObjectId = mongoose.Types.ObjectId();
-        // subCategories
         const subcategories = json.subcategories
           .filter(({ category }) => id === category)
           .map(({ title: subTitle, id: subId }: IBaseSubcategory) => {
@@ -88,8 +44,43 @@ async function main() {
                   status: prodStatus,
                   description: prodDescription,
                   images: prodImages,
+                  id: prodId,
                 }: IBaseProduct): IProduct => {
                   const _productdId: mongoose.Types.ObjectId = mongoose.Types.ObjectId();
+                  const orders1 = json.orders.map(
+                    ({
+                      products: orderProducts,
+                      totalCost,
+                      createdAt,
+                      delivery,
+                      user,
+                      phone,
+                    }: IBaseOrder): IOrder => {
+                      const _orderId: mongoose.Types.ObjectId = mongoose.Types.ObjectId();
+                      const orderProducts1 = orderProducts
+                        .filter(({ product }: IBaseOrderProduct): boolean => {
+                          return prodId === product;
+                        })
+                        .map(
+                          ({ count }: IBaseOrderProduct): IOrderProduct => {
+                            return {
+                              count,
+                              product: _productdId,
+                            };
+                          }
+                        );
+                      return {
+                        _id: _orderId,
+                        createdAt,
+                        delivery,
+                        phone,
+                        products: orderProducts1,
+                        totalCost,
+                        user,
+                      };
+                    }
+                  );
+                  orders = [...orders, ...orders1];
                   return {
                     _id: _productdId,
                     description: prodDescription,
@@ -108,27 +99,29 @@ async function main() {
         return { name: title, _id: categoryId };
       }
     );
+    if (!fs.existsSync(`${__dirname}/output`)) {
+      fs.mkdirSync(`${__dirname}/output`);
+    }
     await asyncFileWriter(
-      `${__dirname}/json-products.json`,
+      `${__dirname}/output/json-orders.json`,
+      JSON.stringify(orders, null, 4),
+      'utf8'
+    );
+    await asyncFileWriter(
+      `${__dirname}/output/json-products.json`,
       JSON.stringify(products, null, 4),
       'utf8'
     );
     await asyncFileWriter(
-      `${__dirname}/json-categories.json`,
+      `${__dirname}/output/json-categories.json`,
       JSON.stringify(categories, null, 4),
       'utf8'
     );
     await asyncFileWriter(
-      `${__dirname}/json-sub-categories.json`,
+      `${__dirname}/output/json-sub-categories.json`,
       JSON.stringify(subCategories, null, 4),
       'utf8'
     );
-    // tslint:disable-next-line:no-console
-    console.log(categories);
-    // tslint:disable-next-line:no-console
-    console.log(subCategories);
-    // tslint:disable-next-line:no-console
-    console.log(products);
   } catch (err) {
     // tslint:disable-next-line:no-console
     console.log(err);
