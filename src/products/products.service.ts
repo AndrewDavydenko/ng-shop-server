@@ -60,6 +60,7 @@ export class ProductsService {
             },
           },
           idSubCategory: { $first: '$idSubCategory' },
+          images: { $first: '$images' },
           name: { $first: '$name' },
           price: { $first: '$price' },
           rating: { $avg: '$feedbacks.rate' },
