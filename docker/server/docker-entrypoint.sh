@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd /var/www/wosido
+cd /var/www/ng-shop
 
-if [ ! -d /var/www/wosido/node_modules ]; then
+if [ ! -d /var/www/ng-shop/node_modules ]; then
   npm cache clean -f  &&  npm install
 fi;
 

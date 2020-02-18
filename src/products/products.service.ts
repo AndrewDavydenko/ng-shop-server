@@ -73,17 +73,42 @@ export class ProductsService {
     ]);
   }
   public async findProdcut(_id: string): Promise<ProductDto[]> {
-    return this.productModel.aggregate([
-      { $match: { _id: mongoose.Types.ObjectId(_id) } },
-      {
-        $lookup: {
-          as: 'comments',
-          foreignField: 'product',
-          from: 'feedbacks',
-          localField: '_id',
-        },
-      },
-    ]);
+    return (
+      this.productModel
+        .aggregate([
+          { $match: { _id: mongoose.Types.ObjectId(_id) } },
+          {
+            $lookup: {
+              as: 'feedbacks',
+              foreignField: 'product',
+              from: 'feedbacks',
+              localField: '_id',
+            },
+          },
+          { $unwind: { path: '$feedbacks', preserveNullAndEmptyArrays: true } },
+          {
+            $group: {
+              _id: '$_id',
+              description: { $first: '$description' },
+              feedbacksCount: {
+                $sum: {
+                  $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
+                },
+              },
+              images: { $first: '$images' },
+              name: { $first: '$name' },
+              price: { $first: '$price' },
+              rating: { $avg: '$feedbacks.rate' },
+              status: { $first: '$status' },
+              subCategory: { $first: '$subCategory' },
+            },
+          },
+        ])
+        // tslint:disable-next-line:no-any
+        .then((res: any) => {
+          return res[0];
+        })
+    );
   }
   public async updateProduct(
     query: ProductDto,

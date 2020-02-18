@@ -1,14 +1,14 @@
-version: "3.4"
+version: '3.4'
 
 services:
   server:
-    container_name: wosido-server
+    container_name: ng-shop-server
     build: docker/server
     ports:
       - 8090:8090
       - 5858:5858
     volumes:
-      - ./:/var/www/wosido
+      - ./:/var/www/ng-shop
     environment:
       - COMPOSE_HTTP_TIMEOUT=300
     tty: true
@@ -16,16 +16,16 @@ services:
     depends_on:
       - mongodb
     networks:
-      - wosido-network
+      - ng-shop-network
 
   mongodb:
     image: mongo:latest
-    container_name: wosido-mongodb
+    container_name: ng-shop-mongodb
     ports:
       - 27017:27017
     networks:
-      - wosido-network
+      - ng-shop-network
 
 networks:
-  wosido-network:
+  ng-shop-network:
     external: true

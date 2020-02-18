@@ -10,10 +10,10 @@ async function bootstrap() {
     cors: true,
   });
   const options = new DocumentBuilder()
-    .setTitle('WOSIDO')
-    .setDescription('The WOSIDO API')
+    .setTitle('ng-shop')
+    .setDescription('The ng-shop API')
     .setVersion('1.0')
-    .addTag('wosido')
+    .addTag('ng-shop')
     .build();
   app.use(
     bodyParser.json({
