@@ -106,7 +106,7 @@ export class ProductsService {
         ])
         // tslint:disable-next-line:no-any
         .then((res: any) => {
-          return res[0];
+          return res[0]; // TODO: REWORK IT
         })
     );
   }
