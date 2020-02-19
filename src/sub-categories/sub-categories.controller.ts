@@ -1,9 +1,8 @@
-import { CategoryDto } from './categories.dto';
+import { SubCategoriesService } from './sub-categories.service';
 import {
   Body,
   Controller,
   Delete,
-  Get,
   HttpStatus,
   Param,
   Post,
@@ -13,56 +12,34 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { CategoriesService } from './categories.service';
 import { Response } from 'express';
+import { SubCategotyDto } from './sub-categories.dto';
 
-@ApiTags('categories')
-@Controller('categories')
-export class CategoriesController {
-  public constructor(private categoriesService: CategoriesService) {}
+@ApiTags('subcategories')
+@Controller('subcategories')
+export class SubCategoriesController {
+  public constructor(private subCategoriesService: SubCategoriesService) {}
+
   @UseGuards(AuthGuard('jwt'))
   @Post('')
-  @ApiOperation({ description: 'Create new category' })
+  @ApiOperation({ description: 'Create new sub category' })
   @ApiResponse({
-    description: 'Category was successfully created',
+    description: 'Sub category was successfully created',
     status: HttpStatus.OK,
   })
   @ApiResponse({
     description: 'Server error',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
-  public async createCategory(
-    @Body() category: CategoryDto,
+  public async createSubCategory(
+    @Body() subCategory: SubCategotyDto,
     @Res() res: Response
   ) {
     try {
-      await this.categoriesService.createCategory(category);
-      return res.status(HttpStatus.OK).json({ data: null, error: null });
-    } catch (error) {
+      await this.subCategoriesService.createSubCategory(subCategory);
       return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('')
-  @ApiOperation({
-    description: 'Get categories with subcategories and product count',
-  })
-  @ApiResponse({
-    description: 'Got categories with subcategories and product count',
-    status: HttpStatus.OK,
-  })
-  @ApiResponse({
-    description: 'Server error',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  // tslint:disable-next-line: no-any
-  public async findCategories(@Res() res: Response) {
-    try {
-      const categories = await this.categoriesService.findCategoies();
-      return res.status(HttpStatus.OK).json({ data: categories, error: null });
+        .status(HttpStatus.OK)
+        .json({ data: 'Category created', error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -81,13 +58,16 @@ export class CategoriesController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   public async updateSubCategory(
-    @Body() category: CategoryDto,
+    @Body() subCategory: SubCategotyDto,
     // tslint:disable-next-line:no-any
     @Param() param: any,
     @Res() res: Response
   ) {
     try {
-      await this.categoriesService.updateCategory(param.id, category.name);
+      await this.subCategoriesService.updateSubCategory(
+        param.id,
+        subCategory.name
+      );
       return res.status(HttpStatus.OK).json({ data: null, error: null });
     } catch (error) {
       return res
@@ -97,19 +77,19 @@ export class CategoriesController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  @ApiOperation({ description: 'Delete category by id' })
+  @ApiOperation({ description: 'Delete sub category by id' })
   @ApiResponse({
-    description: 'Category deleted successfully',
+    description: 'Sub category deleted successfully',
     status: HttpStatus.OK,
   })
   @ApiResponse({
-    description: 'Server error find',
+    description: 'Server error',
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   // tslint:disable-next-line: no-any
-  public async deleteCategory(@Res() res: Response, @Param() param: any) {
+  public async deleteSubCategory(@Res() res: Response, @Param() param: any) {
     try {
-      await this.categoriesService.deleteCategory(param.id);
+      await this.subCategoriesService.deleteSubCategory(param.id);
       return res.status(HttpStatus.OK).json({ data: null, error: null });
     } catch (error) {
       return res

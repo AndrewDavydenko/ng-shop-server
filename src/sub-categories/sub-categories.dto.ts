@@ -4,5 +4,5 @@ export class SubCategotyDto {
   @ApiProperty()
   public readonly name!: string;
   @ApiProperty()
-  public readonly idCategory!: string;
+  public readonly category!: string;
 }

@@ -11,7 +11,7 @@ MongoClient.connect(
   url,
   { useNewUrlParser: true },
   // tslint:disable-next-line:no-any
-  (_err: any, db: any) => {
+  async (_err: any, db: any) => {
     const dbo = db.db('heroku_smfd2t77');
     // tslint:disable-next-line:no-any
     products.map((elem: any) => {
@@ -30,6 +30,13 @@ MongoClient.connect(
       elem._id = mongoose.Types.ObjectId(elem._id);
       elem.category = mongoose.Types.ObjectId(elem.category);
       dbo.collection('subcategories').insertOne(elem);
+    });
+    const anotherCat = await dbo
+      .collection('categories')
+      .insertOne({ name: 'Прочее' });
+    await dbo.collection('subcategories').insertOne({
+      category: mongoose.Types.ObjectId(anotherCat._id),
+      name: 'Без категории',
     });
     // tslint:disable-next-line:no-console
     console.log('done');

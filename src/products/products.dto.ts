@@ -4,7 +4,7 @@ export class ProductDto {
   @ApiProperty()
   public readonly name!: string;
   @ApiProperty()
-  public readonly idSubCategory!: string;
+  public readonly subCategory!: string;
   @ApiProperty()
   public readonly description!: string;
   @ApiProperty()

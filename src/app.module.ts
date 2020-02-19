@@ -1,12 +1,13 @@
+import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { CategoriesModule } from './categories/categories.module';
+import { SubCategoriesModule } from './sub-categories/sub-categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { CategoriesModule } from './categories/categories.module';
     ProductsModule,
     AuthModule,
     CategoriesModule,
+    SubCategoriesModule,
   ],
   providers: [AppService],
 })

@@ -17,6 +17,7 @@ import { ProductsService } from './products.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { ParseBool } from './parseBool.pipe';
+import { ParseInt } from './parseInt.pipe';
 
 @ApiTags('products')
 @Controller('products')
@@ -49,9 +50,9 @@ export class ProductsController {
     }
   }
   @Get('')
-  @ApiOperation({ description: 'User is looking for a products' })
+  @ApiOperation({ description: 'Get products' })
   @ApiResponse({
-    description: 'Products founded successfully',
+    description: 'Got Products',
     status: HttpStatus.OK,
   })
   @ApiResponse({
@@ -63,14 +64,16 @@ export class ProductsController {
     @Query('text') searchByName: string,
     @Query('subcategory') subCat: string,
     @Query('price') price: string,
-    @Query('status', new ParseBool()) status: boolean
+    @Query('status', new ParseBool()) status: boolean,
+    @Query('page', new ParseInt()) page: number
   ) {
     try {
       const products = await this.productsService.findProdcuts(
         searchByName,
         subCat,
         price,
-        status
+        status,
+        page
       );
       return res.status(HttpStatus.OK).json({ data: products, error: null });
     } catch (error) {
@@ -81,10 +84,11 @@ export class ProductsController {
         .json({ data: null, error });
     }
   }
+
   @Get(':id')
-  @ApiOperation({ description: 'User is looking for a product' })
+  @ApiOperation({ description: 'Get one product by id' })
   @ApiResponse({
-    description: 'Product founded successfully',
+    description: 'Got one product by id ',
     status: HttpStatus.OK,
   })
   @ApiResponse({
@@ -104,7 +108,7 @@ export class ProductsController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
-  @ApiOperation({ description: 'Updute product' })
+  @ApiOperation({ description: 'Update one product by id' })
   @ApiResponse({
     description: ' Update product success',
     status: HttpStatus.OK,
@@ -118,7 +122,7 @@ export class ProductsController {
     // tslint:disable-next-line:no-any
     @Param('id') param: any,
     // tslint:disable-next-line:no-any
-    @Body() product: any,
+    @Body() product: ProductDto,
     @Res() res: Response
   ) {
     try {
@@ -138,7 +142,7 @@ export class ProductsController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  @ApiOperation({ description: 'Delete product' })
+  @ApiOperation({ description: 'Delete one product by id' })
   @ApiResponse({
     description: ' Delete product success',
     status: HttpStatus.OK,

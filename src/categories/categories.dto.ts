@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CategotyDto {
+export class CategoryDto {
   @ApiProperty()
   public readonly name!: string;
 }

@@ -6,15 +6,12 @@ import {
   Post,
   Res,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as bcrypt from 'bcrypt';
-
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto, UserDto } from 'src/users/user.dto';
@@ -99,32 +96,6 @@ export class AuthController {
       });
       delete newUser.password;
       return res.status(HttpStatus.OK).json({ data: accessToken, error: null });
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ data: null, error });
-    }
-  }
-  @UseGuards(AuthGuard('jwt'))
-  @Post('checkCode')
-  @ApiOperation({ description: 'User checke unique code from sms' })
-  @ApiResponse({
-    description: 'Checke unique code from sms',
-    status: HttpStatus.OK,
-  })
-  @ApiResponse({
-    description: 'Wrong unique code',
-    status: HttpStatus.UNAUTHORIZED,
-  })
-  @ApiResponse({
-    description: 'Server error during checking unique code',
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-  })
-  public async checkUnique(@Body() code: number, @Res() res: Response) {
-    try {
-      const user: UserDto = await this.usersService.findUser(code);
-      delete user.password;
-      return res.status(HttpStatus.OK).json({ data: user, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
