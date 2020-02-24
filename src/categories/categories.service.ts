@@ -95,7 +95,7 @@ export class CategoriesService {
     await this.categoryModel.deleteOne({ _id: Types.ObjectId(_id) });
   }
   public async updateCategory(id: string, name: string) {
-    await this.categoryModel.findOneAndUpdate(
+    return await this.categoryModel.findOneAndUpdate(
       { _id: Types.ObjectId(id) },
       { $set: { name } }
     );

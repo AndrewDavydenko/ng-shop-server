@@ -46,7 +46,7 @@ export class SubCategoriesService {
   }
 
   public async updateSubCategory(id: string, name: string) {
-    await this.subCategoryModel.findOneAndUpdate(
+    return await this.subCategoryModel.findOneAndUpdate(
       { _id: Types.ObjectId(id) },
       { $set: { name } }
     );

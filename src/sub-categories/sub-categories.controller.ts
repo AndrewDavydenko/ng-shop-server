@@ -36,10 +36,12 @@ export class SubCategoriesController {
     @Res() res: Response
   ) {
     try {
-      await this.subCategoriesService.createSubCategory(subCategory);
+      const createdSubCategory = await this.subCategoriesService.createSubCategory(
+        subCategory
+      );
       return res
         .status(HttpStatus.OK)
-        .json({ data: 'Category created', error: null });
+        .json({ data: createdSubCategory, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -64,11 +66,13 @@ export class SubCategoriesController {
     @Res() res: Response
   ) {
     try {
-      await this.subCategoriesService.updateSubCategory(
+      const updatedSubCategory = await this.subCategoriesService.updateSubCategory(
         param.id,
         subCategory.name
       );
-      return res.status(HttpStatus.OK).json({ data: null, error: null });
+      return res
+        .status(HttpStatus.OK)
+        .json({ data: updatedSubCategory, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

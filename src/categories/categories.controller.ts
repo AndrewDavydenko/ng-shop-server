@@ -36,8 +36,8 @@ export class CategoriesController {
     @Res() res: Response
   ) {
     try {
-      await this.categoriesService.createCategory(category);
-      return res.status(HttpStatus.OK).json({ data: null, error: null });
+      const newCategory = await this.categoriesService.createCategory(category);
+      return res.status(HttpStatus.OK).json({ data: newCategory, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -87,8 +87,13 @@ export class CategoriesController {
     @Res() res: Response
   ) {
     try {
-      await this.categoriesService.updateCategory(param.id, category.name);
-      return res.status(HttpStatus.OK).json({ data: null, error: null });
+      const updatedCategory = await this.categoriesService.updateCategory(
+        param.id,
+        category.name
+      );
+      return res
+        .status(HttpStatus.OK)
+        .json({ data: updatedCategory, error: null });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
