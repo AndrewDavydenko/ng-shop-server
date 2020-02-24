@@ -62,6 +62,7 @@ export class ProductsService {
           $group: {
             _id: '$_id',
             description: { $first: '$description' },
+            feedbacks: {$first: '$feedbacks'},
             feedbacksCount: {
               $sum: {
                 $cond: [{ $ifNull: ['$feedbacks', null] }, 1, 0],
